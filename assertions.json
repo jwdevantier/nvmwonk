@@ -1,0 +1,859 @@
+{
+// SPDX-FileCopyrightText: 2025 Jesper Wendel Devantier <jwd@defmacro.it>
+// SPDX-License-Identifier: BSD-2-Clause
+  "scenarios": [
+    {
+      "name": "oaes-rlcc-bit",
+      "note": "TP adds RLCC to OAES (bit 22) in Identify Controller; base must not have it. Also covers nested tables, elision rows, strike-edits (26:22 -> 26:23), and near-miss canaries.",
+      "slices": [
+        {
+          "label": "TP-OAES",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//table[contains(@caption, 'Identify Controller Data Structure, I/O Command Set Independent')]//row[contains(., 'OAES')]"
+        },
+        {
+          "label": "BASE-OAES",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//table[contains(@caption, 'Identify Controller Data Structure, I/O Command Set Independent')]//row[contains(., 'OAES')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-OAES slice contains a row describing the OAES field",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "In TP-OAES, the OAES cell contains a nested table of bit definitions",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "In TP-OAES, a bit named RLCC appears at bit 22, marked as newly added content",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "In TP-OAES, the reserved bits directly above RLCC span 26:23",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "In TP-OAES, the nested table contains a row consisting of a single ellipsis character",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "In TP-OAES, a bit named DLPCN appears",
+          "expect": false
+        },
+        {
+          "id": "A7",
+          "statement": "In BASE-OAES, a bit named DLPCN appears at bit 31",
+          "expect": true
+        },
+        {
+          "id": "A8",
+          "statement": "In BASE-OAES, a bit named RLCC appears",
+          "expect": false
+        },
+        {
+          "id": "A9",
+          "statement": "In BASE-OAES, the reserved range 26:22 appears",
+          "expect": true
+        },
+        {
+          "id": "A10",
+          "statement": "In TP-OAES, the text '26:22' appears anywhere in the slice",
+          "expect": false
+        },
+        {
+          "id": "A11",
+          "statement": "In TP-OAES, a bit named RLCCN appears",
+          "expect": false
+        },
+        {
+          "id": "A12",
+          "statement": "In TP-OAES, RLCC appears at bit 23",
+          "expect": false
+        },
+        {
+          "id": "A13",
+          "statement": "In TP-OAES, the reserved-bits description refers to Figure 409",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "aec-rlccn-bit",
+      "note": "TP adds RLCCN to Asynchronous Event Configuration CDW11 (bit 22) in Figure 409; base has 26:22 reserved. Reverse near-miss canaries (RLCC/LHCN live in the OAES figure, not here) plus merged-row checks.",
+      "slices": [
+        {
+          "label": "TP-409",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//table[@caption='Figure 409: Asynchronous Event Configuration – Command Dword 11']"
+        },
+        {
+          "label": "BASE-409",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//table[@caption='Figure 409: Asynchronous Event Configuration – Command Dword 11']"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "In TP-409, a bit named RLCCN appears at bit 22",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "In TP-409, both cells of the RLCCN row are marked as newly added content",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "In TP-409, a bit named RLCC appears",
+          "expect": false
+        },
+        {
+          "id": "A4",
+          "statement": "In TP-409, the reserved range directly above RLCCN spans 26:23",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "In TP-409, a bit named LHCN appears",
+          "expect": false
+        },
+        {
+          "id": "A6",
+          "statement": "In TP-409, the last row is a single-cell row whose text begins with 'Notes:' and refers to the NVM Express NVM Command Set Specification",
+          "expect": true
+        },
+        {
+          "id": "A7",
+          "statement": "In BASE-409, the bits 26:22 are Reserved",
+          "expect": true
+        },
+        {
+          "id": "A8",
+          "statement": "In BASE-409, a bit named RLCCN appears",
+          "expect": false
+        },
+        {
+          "id": "A9",
+          "statement": "In BASE-409, the bits 26:23 are Reserved",
+          "expect": false
+        },
+        {
+          "id": "A11",
+          "statement": "In BASE-409, the last row consists of a single cell whose text begins with 'Notes:'",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "pel-caption-quirk",
+      "note": "The TP docx renders the PEL requirements figure caption with a broken SEQ field: 'Figure 1:' where the base numbers it 249. Faithful extraction must reproduce this quirk.",
+      "slices": [
+        {
+          "label": "TP-PEL",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//table[contains(@caption, 'Feature Persistent Event Logging Requirements')]"
+        },
+        {
+          "label": "BASE-PEL",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//table[contains(@caption, 'Feature Persistent Event Logging Requirements')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-PEL table's caption is exactly 'Figure 1: Feature Persistent Event Logging Requirements'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The BASE-PEL table's caption is exactly 'Figure 249: Feature Persistent Event Logging Requirements'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The TP-PEL table's caption begins with 'Figure 249:'",
+          "expect": false
+        },
+        {
+          "id": "A4",
+          "statement": "The BASE-PEL table's caption begins with 'Figure 1:'",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "The TP-PEL and BASE-PEL captions share the same figure title text after the colon",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "tbd-mechanisms",
+      "note": "tbd values across three shapes: a number range start (Figure 403), a figure token in prose (NEWGETF), and a section token in a log-page support row (Figure 15). Base must have zero tbd.",
+      "slices": [
+        {
+          "label": "TP-403ROWS",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//table[@caption='Figure 403: Set Features – Feature Identifiers']//row[contains(., '28h') or contains(., '29h to')]"
+        },
+        {
+          "label": "TP-NEWGETF",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//p[contains(., 'NEWGETF')]"
+        },
+        {
+          "label": "TP-LOGPAGESUP",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//table[@caption='Figure 15: NVM Command Set Log Page Support']//row[contains(., 'Rate Limiting')]"
+        },
+        {
+          "label": "BASE-TBD",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//tbd"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "In TP-403ROWS, a row lists feature identifier 28h ~pointing to the NVM Express NVM Command Set Specification~, with both cells marked as newly added content",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "In TP-403ROWS, the reserved range row contains a tbd element ~covering the range start value~",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "In TP-403ROWS, the reserved range reads '29h to 77h'",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "In TP-403ROWS, the reserved range reads '26h to 77h'",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "In TP-NEWGETF, the paragraph mixes newly added content with a tbd element holding the figure token 'Figure NEWGETF'",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "In TP-NEWGETF, the tbd element containing 'Figure NEWGETF' is a direct child of the paragraph, not nested inside a <content added=\"true\"> element",
+          "expect": true
+        },
+        {
+          "id": "A7",
+          "statement": "In TP-LOGPAGESUP, the section reference cell of the Rate Limiting row is a tbd element containing '4.1.4.NEW'",
+          "expect": true
+        },
+        {
+          "id": "A8",
+          "statement": "In TP-LOGPAGESUP, the log page identifier cell contains 28h marked as newly added content",
+          "expect": true
+        },
+        {
+          "id": "A9",
+          "statement": "In TP-LOGPAGESUP, the section reference cell contains a final section number like '4.1.4.2'",
+          "expect": false
+        },
+        {
+          "id": "A10",
+          "statement": "The BASE-TBD slice contains at least one tbd element",
+          "expect": false
+        }
+      ]
+    },
+    {
+      "name": "doc-identity",
+      "note": "TP structure: three spec-changes wrappers + metadata titles. Base is a plain spec: no spec-changes elements. The TP's 'NVM Command Set Specification 2.1' string is a typo in the TP itself (A3 quotes it verbatim; the NVM CS is at 1.x - TP4176 integrated into revision 1.3); Management Interface 2.1 is real (base 2.3 references MI at 2.1).",
+      "slices": [
+        {
+          "label": "TP-SPECS",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//spec-changes/@spec"
+        },
+        {
+          "label": "BASE-SPECS",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//spec-changes/@spec"
+        },
+        {
+          "label": "TP-TITLE",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//metadata/title/text()"
+        },
+        {
+          "label": "BASE-TITLE",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//metadata/title/text()"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-SPECS slice contains exactly three results",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The TP-SPECS slice includes 'NVM Express Base Specification 2.3'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The TP-SPECS slice includes 'NVM Express NVM Command Set Specification 2.1'",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "The TP-SPECS slice includes 'NVM Express Management Interface Specification 2.1'",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "The TP-SPECS slice includes 'NVM Express Zoned Namespace Command Set Specification'",
+          "expect": false
+        },
+        {
+          "id": "A6",
+          "statement": "The BASE-SPECS slice contains at least one result",
+          "expect": false
+        },
+        {
+          "id": "A7",
+          "statement": "The TP-TITLE slice reports the title 'Rate Limiting'",
+          "expect": true
+        },
+        {
+          "id": "A8",
+          "statement": "The BASE-TITLE slice reports a title containing 'Base Specification'",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "annex-token-bucket",
+      "note": "TP adds Annex A (token bucket example, not Informative, no tables). Base annexes are A/B/C: Sanitize, Host, Power - none about rate limiting.",
+      "slices": [
+        {
+          "label": "TP-ANNEX",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//annex"
+        },
+        {
+          "label": "BASE-ANNEXALL",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//annex/@heading"
+        },
+        {
+          "label": "BASE-ANNEXRL",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//annex[contains(@heading, 'Rate Limiting')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-ANNEX slice contains exactly one annex",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The TP-ANNEX annex is titled 'Annex A. Rate Limiting Capability Implementation'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The TP-ANNEX annex ~describes token buckets~",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "The TP-ANNEX annex heading is marked '(Informative)'",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "The TP-ANNEX annex contains at least one table",
+          "expect": false
+        },
+        {
+          "id": "A6",
+          "statement": "The BASE-ANNEXALL slice lists 'Annex A. Sanitize Operation Considerations (Informative)'",
+          "expect": true
+        },
+        {
+          "id": "A7",
+          "statement": "The BASE-ANNEXRL slice contains at least one result",
+          "expect": false
+        }
+      ]
+    },
+    {
+      "name": "section-5new-prose",
+      "note": "Direct paragraphs of section 5.NEW Rate Limiting: prose is added content, refers to Hard/Soft Limit modes, and does NOT mention token buckets (annex material) or RLCC (figure material).",
+      "slices": [
+        {
+          "label": "TP-SEC5NEW",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//section[re:test(@heading, '^5\\.NEW\\s')]/p"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "In TP-SEC5NEW, an added paragraph states that ~the Rate Limiting capability provides the host the ability to request a limit to the bandwidth and IOPS~",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "In TP-SEC5NEW, a paragraph refers to ~a Soft Limit mode~",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "In TP-SEC5NEW, a paragraph refers to ~a Hard Limit mode~",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "In TP-SEC5NEW, a paragraph mentions a token bucket",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "In TP-SEC5NEW, a paragraph mentions RLCC",
+          "expect": false
+        },
+        {
+          "id": "A6",
+          "statement": "The TP-SEC5NEW slice contains more than ten paragraphs",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "feature-28h-section",
+      "note": "Whole-section slice (21KB): heading by stable text, token-numbered figures (FIGCDW11, RLDB, BWS), first paragraph mixing added content with tbd tokens, breadcrumb nesting.",
+      "slices": [
+        {
+          "label": "TP-F28H",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//section[contains(@heading, 'Feature Identifier 28h')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-F28H section's heading contains 'Rate Limiting (Feature Identifier 28h)'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The TP-F28H section contains a figure whose caption is 'Figure FIGCDW11: Rate Limits – Command Dword 11'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The TP-F28H section contains a figure whose caption is 'Figure RLDB: Rate Limiting – Data Buffer'",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "The TP-F28H section contains a figure whose caption is 'Figure BWS: Bandwidth Scale Factors'",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "The TP-F28H section's first paragraph contains tbd elements holding 'Figure FIGCDW11' and '5.NEW'",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "In TP-F28H, at least one figure carries a final numeric figure number",
+          "expect": false
+        },
+        {
+          "id": "A7",
+          "statement": "The TP-F28H section's breadcrumb shows it nested under 'Get Features & Set Features commands'",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "log-page-28h-section",
+      "note": "Whole-section slice (33KB): the Rate Limiting log page section with its token-numbered descriptor figures (NewFig, QPD, QCD, QNSED, QMAD).",
+      "slices": [
+        {
+          "label": "TP-LP28H",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//section[contains(@heading, 'Log Page Identifier 28h')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-LP28H section's heading contains 'Rate Limiting (Log Page Identifier 28h)'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The TP-LP28H section contains a figure whose caption is 'Figure NewFig: Rate Limiting Log Page'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The TP-LP28H section contains figures captioned 'Rate Limiting Port Descriptor' and 'Rate Limiting Controller Descriptor'",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "The TP-LP28H section contains a figure captioned 'Rate Limiting Maximum Access Descriptor'",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "The TP-LP28H section contains a figure captioned 'Non-Volatile Storage Medium Access Descriptor'",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "In TP-LP28H, all five figure captions begin with 'Figure ' followed by a token ('NewFig', 'QPD', 'QCD', 'QNSED', 'QMAD'), not a numeric figure number",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "base-added-quirks",
+      "note": "The published base 2.3 docx is not perfectly clean: it contains 15 blue runs - one URL and 14 whitespace-only. The extractor reproduces them faithfully; these assertions document that.",
+      "slices": [
+        {
+          "label": "BASE-URL",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//content[@added='true'][contains(., 'nvmexpress.org')]"
+        },
+        {
+          "label": "BASE-SPACES",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//content[@added='true'][normalize-space(.) = '']"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The BASE-URL slice contains one result: ~a URL on the nvmexpress.org domain~ marked as added content",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The BASE-URL result's breadcrumb places it in the Overview section of the Introduction",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The BASE-SPACES slice contains at least one result",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "Every result in BASE-SPACES is added content containing only whitespace",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "The BASE-SPACES slice contains more than ten results",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "note-markup",
+      "note": "Green bracketed editor notes: the legend note and two ECN132 notes in the NVM Command Set Model section. Blue Highlighted is tbd legend text, not a note.",
+      "slices": [
+        {
+          "label": "TP-NOTES",
+          "doc": "docs/tp4176.xml",
+          "xpath": "//note"
+        },
+        {
+          "label": "BASE-NOTES",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "//note"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-NOTES slice contains exactly three notes",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "In TP-NOTES, one note contains the text '<Green Bracketed>:'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "In TP-NOTES, two notes contain the text '<Note: The following table is from ECN132>'",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "In TP-NOTES, a note contains the text 'Blue Highlighted:'",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "In TP-NOTES, the ECN132 notes' breadcrumbs place them in the 'NVM Command Set Model' section",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "The BASE-NOTES slice contains at least one note",
+          "expect": false
+        }
+      ]
+    },
+    {
+      "name": "rate-limit-mentions",
+      "note": "EXSLT regex in slices: case-insensitive 'rate limit' text count. TP: 103 occurrences; base: zero (the core premise of this TP); NVM CS 1.3 draft: many (TP4176 integrated at final numbering).",
+      "slices": [
+        {
+          "label": "TP-RLCOUNT",
+          "doc": "docs/tp4176.xml",
+          "xpath": "count(//text()[re:test(., 'rate limit', 'i')])"
+        },
+        {
+          "label": "BASE-RLCOUNT",
+          "doc": "docs/base-2.3.xml",
+          "xpath": "count(//text()[re:test(., 'rate limit', 'i')])"
+        },
+        {
+          "label": "NVM-RLCOUNT",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "count(//text()[re:test(., 'rate limit', 'i')])"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The TP-RLCOUNT slice reports a count greater than 50",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The TP-RLCOUNT slice reports a count of exactly zero",
+          "expect": false
+        },
+        {
+          "id": "A3",
+          "statement": "The BASE-RLCOUNT slice reports a count of zero",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "The BASE-RLCOUNT slice reports a count greater than 50",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "The NVM-RLCOUNT slice reports a count greater than 50",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "The NVM-RLCOUNT slice reports a count of exactly zero",
+          "expect": false
+        }
+      ]
+    },
+    {
+      "name": "nvm-doc-identity",
+      "note": "Third document family: the NVM Command Set 1.3 draft (TP4176 integrated, clean text at final numbering). Published-spec structure like base: a metadata title and no spec-changes wrappers.",
+      "slices": [
+        {
+          "label": "NVM-TITLE",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//metadata/title/text()"
+        },
+        {
+          "label": "NVM-SPECS",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//spec-changes/@spec"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The NVM-TITLE slice reports the title 'NVM Express® NVM Command Set Specification'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The NVM-TITLE slice reports the title 'NVM Express Base Specification'",
+          "expect": false
+        },
+        {
+          "id": "A3",
+          "statement": "The NVM-SPECS slice contains at least one result",
+          "expect": false
+        },
+        {
+          "id": "A4",
+          "statement": "The NVM-TITLE slice reports the title 'Rate Limiting'",
+          "expect": false
+        }
+      ]
+    },
+    {
+      "name": "nvm-integrated-rate-limiting",
+      "note": "Downstream cross-validation: the integrated draft must carry TP4176's content at FINAL numbering - feature 28h, log page 28h, numbered figures - and must NOT carry TP-draft tokens (FIGCDW11, QMAD, ...) or tbd values.",
+      "slices": [
+        {
+          "label": "NVM-RLSECTIONS",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//section[contains(@heading, 'Rate Limiting')]"
+        },
+        {
+          "label": "NVM-RLFIGS",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//table[contains(@caption, 'Rate Limit')]"
+        },
+        {
+          "label": "NVM-TBD",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//tbd"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The NVM-RLSECTIONS slice includes a section heading containing 'Feature Identifier 28h'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The NVM-RLSECTIONS slice includes a section heading containing 'Log Page Identifier 28h'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The NVM-RLSECTIONS slice includes a section heading containing 'Sanitize'",
+          "expect": false
+        },
+        {
+          "id": "A4",
+          "statement": "The NVM-RLFIGS slice includes the caption 'Figure 117: Rate Limiting Log Page'",
+          "expect": true
+        },
+        {
+          "id": "A5",
+          "statement": "The NVM-RLFIGS slice includes a caption containing 'Rate Limiting Maximum Access Descriptor'",
+          "expect": true
+        },
+        {
+          "id": "A6",
+          "statement": "The NVM-RLFIGS slice includes a caption containing 'Figure 106: Rate Limits – Command Dword 11'",
+          "expect": true
+        },
+        {
+          "id": "A7",
+          "statement": "The NVM-RLFIGS slice includes a caption containing the token 'QMAD'",
+          "expect": false
+        },
+        {
+          "id": "A8",
+          "statement": "The NVM-RLFIGS slice includes a caption containing 'FIGCDW11'",
+          "expect": false
+        },
+        {
+          "id": "A9",
+          "statement": "The NVM-TBD slice contains at least one result",
+          "expect": false
+        }
+      ]
+    },
+    {
+      "name": "nvm-pi-numbered-headings",
+      "note": "Regression guard for heading numbering: titles that themselves start with a digit ('16b Guard Protection Information') must still get their reconstructed section number prepended (5.3.1.1 16b ...).",
+      "slices": [
+        {
+          "label": "NVM-GUARD",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//section[contains(@heading, 'Guard Protection Information')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The NVM-GUARD slice includes the heading '5.3.1.1 16b Guard Protection Information'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The NVM-GUARD slice includes the heading '5.3.1.3 64b Guard Protection Information'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The NVM-GUARD slice includes a heading that is exactly '16b Guard Protection Information' with no section number before the '16b'",
+          "expect": false
+        },
+        {
+          "id": "A4",
+          "statement": "The NVM-GUARD slice includes the heading '5.3.1.2 32b Guard Protection Information'",
+          "expect": true
+        }
+      ]
+    },
+    {
+      "name": "nvm-figure-123",
+      "note": "Regression guard for caption-row detection: a caption row padded with empty cells (Figure 123: caption + one stray empty cell) must become the table's caption attribute, and the first emitted row must be the real header row, not the caption.",
+      "slices": [
+        {
+          "label": "NVM-F123",
+          "doc": "docs/nvm-command-set-spec-1.3.xml",
+          "xpath": "//table[contains(@caption, 'Identify Namespace Data Structure, NVM Command Set')]"
+        }
+      ],
+      "statements": [
+        {
+          "id": "A1",
+          "statement": "The NVM-F123 slice table's caption begins with 'Figure 123'",
+          "expect": true
+        },
+        {
+          "id": "A2",
+          "statement": "The first row of the NVM-F123 slice table has a cell containing 'Bytes' and a cell containing 'Description'",
+          "expect": true
+        },
+        {
+          "id": "A3",
+          "statement": "The NVM-F123 slice table includes a row whose Description cell begins with 'Namespace Size (NSZE)'",
+          "expect": true
+        },
+        {
+          "id": "A4",
+          "statement": "The NVM-F123 slice table contains a data row consisting of the caption text",
+          "expect": false
+        },
+        {
+          "id": "A5",
+          "statement": "The NVM-F123 slice table's caption begins with 'Figure 124'",
+          "expect": false
+        }
+      ]
+    }
+  ]
+}

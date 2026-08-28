@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 Jesper Wendel Devantier <jwd@defmacro.it>
+# SPDX-License-Identifier: CC0-1.0
+
+.direnv/
+result
+*.xml
+*.docx
+__pycache__/
+dist/
+# PyInstaller auto-generated build recipe (superseded by scripts/build.sh)
+*.spec
+node_modules
+*.ctx.md
+build/

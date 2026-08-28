@@ -1,0 +1,10 @@
+version = 1
+[[annotations]]
+path = ["flake.lock"]
+SPDX-FileCopyrightText = "(2025) The REUSE Project"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["**/*.md"]
+SPDX-FileCopyrightText = "2025 Jesper Wendel Devantier <jwd@defmacro.it>"
+SPDX-License-Identifier = "BSD-2-Clause"
